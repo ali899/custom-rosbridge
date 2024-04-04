@@ -13,14 +13,7 @@ import javax.imageio.ImageIO;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.stream.JsonParsingException;
-import javax.websocket.ClientEndpoint;
-import javax.websocket.ContainerProvider;
-import javax.websocket.DeploymentException;
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
+import javax.websocket.*;
 
 import edu.wpi.rail.jrosbridge.callback.CallServiceCallback;
 import edu.wpi.rail.jrosbridge.services.ServiceRequest;
@@ -41,7 +34,7 @@ import edu.wpi.rail.jrosbridge.services.ServiceResponse;
  * @author Russell Toris - russell.toris@gmail.com
  * @version April 1, 2014
  */
-@ClientEndpoint
+@ClientEndpoint(configurator = ClientConfigurator.class)
 public class Ros {
 
 	/**
@@ -201,8 +194,10 @@ public class Ros {
 		try {
 			// create a WebSocket connection here
 			URI uri = new URI(this.getURL());
-			ContainerProvider.getWebSocketContainer()
-					.connectToServer(this, uri);
+//			ContainerProvider.getWebSocketContainer()
+//					.connectToServer(this, uri);
+			WebSocketContainer wsc = ContainerProvider.getWebSocketContainer();
+			wsc.connectToServer(this,uri);
 			return true;
 		} catch (DeploymentException | URISyntaxException | IOException e) {
 			// failed connection, return false
